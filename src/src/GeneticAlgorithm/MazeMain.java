@@ -4,9 +4,8 @@ import java.util.Map;
 
 public class MazeMain {
     public static void main(String[] args){
-       GeneticAlgorithms geneticAlgorithms = new GeneticAlgorithms();
-
-       geneticAlgorithms.Start("DFS");
+     GA GAClass = new GA(5,0.2);
+     GAClass.start();
 
     }
 }
