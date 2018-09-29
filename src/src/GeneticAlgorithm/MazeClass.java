@@ -2,13 +2,13 @@ package GeneticAlgorithm;
 
 import java.util.*;
 
-public class MazeClass {
+public class MazeClass{
     //createMaze
     //same for all search algorithms
 
    public  Cell[][] map = null;
     int dimensions;
-
+    double fitness =0;
     public MazeClass(int dim, double prob){
         this.dimensions = dim;
         map = new Cell[dim][dim];
@@ -393,10 +393,11 @@ public class MazeClass {
                     path.clear();
                 }
             }
-            System.out.println(arrayList.size());
+            //System.out.println(arrayList.size());
             for(int i=arrayList.size()-1;i>0;i--){
                 System.out.print("("+ arrayList.get(i).getX() + " " + arrayList.get(i).getY() + ") ");
 
             }
     }
+
 }

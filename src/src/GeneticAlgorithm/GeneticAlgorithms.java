@@ -13,7 +13,8 @@ public class GeneticAlgorithms {
     //
     private int dimensions = 0;
     private double prob = 0;
-  public void Start(String algo){
+
+    public void Start(String algo){
 
       int dim = dimensions = 500;
       double prob = this.prob =  0.3;
@@ -214,7 +215,6 @@ public class GeneticAlgorithms {
       afterCrossOver = mutation(afterCrossOver);
 
         //System.out.println(isSolvable(afterCrossOver) + " crossover ");
-
 
 
       return afterCrossOver;

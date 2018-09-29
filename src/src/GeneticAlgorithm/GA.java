@@ -17,12 +17,13 @@ public class GA {
     private double probability;
     private MazeClass mazeClass = null;
     private int num = 0;
-    private Map<Integer,Integer> storeSteps = new HashMap<>();
+    private Map<Integer, Integer> storeSteps = new HashMap<>();
     private double[] storeProbability = new double[4];
-    public GA(int dim,double prob){
+
+    public GA(int dim, double prob) {
         this.dimensions = dim;
-        this.probability  = prob;
-         this.mazeClass = new MazeClass(dim,prob);
+        this.probability = prob;
+        this.mazeClass = new MazeClass(dim, prob);
     }
 
 
@@ -31,65 +32,286 @@ public class GA {
         Cell[][] mazeCreated = mazeClass.generateMaze(dimensions, probability);
 
 
-        while(true) {
-             if (isSolvable(mazeCreated).containsKey("STEPS")) {
-                 num++;
-                 storeSteps.put(num,isSolvable(mazeCreated).get("STEPS"));
-
-                 return mazeCreated;
-             } else {
-                 mazeCreated = mazeClass.generateMaze(dimensions, probability);
-
-             }
-
-         }
-    }
+        while (true) {
+            if (isSolvable(mazeCreated)) {
 
 
-    public void start(){
-        Cell[][] mazeOne = new Cell[dimensions][dimensions];
-        Cell[][] mazeTwo = new Cell[dimensions][dimensions];
-        Cell[][] mazeThree  = new Cell[dimensions][dimensions];
-        Cell[][] mazeFour = new Cell[dimensions][dimensions];
-
-        int limit =0;
-
-        while(limit <1){
-            System.out.println("Pass1");
-            mazeOne = Copying( GenerateMazesRandomly());
-            //System.out.println(mazeOne[1][1].getOccupied());
-            mazeTwo = Copying(GenerateMazesRandomly());
-            mazeThree = Copying(GenerateMazesRandomly());
-            mazeFour = Copying(GenerateMazesRandomly());
-
-
-            //get the path steps
-            double sum = 0;
-            for(int i=1;i<=4;i++){
-                sum = sum+storeSteps.get(i);
-            }
-            //store the probability into array
-            for(int i=1;i<=4;i++){
-                int val = storeSteps.get(i);
-                System.out.println(val);
-                double prob = val/sum;
-                storeProbability[i-1] = prob;
+                return mazeCreated;
+            } else {
+                mazeCreated = mazeClass.generateMaze(dimensions, probability);
 
             }
-            //generate the random number
-            int it = 0;
-            Cell[][] ChosenMaze1 = new Cell[dimensions][dimensions];
-            Cell[][] Chosenmaze2 =  new Cell[dimensions][dimensions];
-            boolean firstPass = true;
 
-
-
-            limit++;
         }
     }
 
 
-    public Map<String,Integer> isSolvable(Cell[][] newMaze){
+    public void start(String userInput) {
+        Cell[][] mazeOne = new Cell[dimensions][dimensions];
+        Cell[][] mazeTwo = new Cell[dimensions][dimensions];
+        Cell[][] hardestSoFar = new Cell[dimensions][dimensions];
+        double hardestSoFarVal = 0;
+
+
+//      Cell[][] mazeThree  = new Cell[dimensions][dimensions];
+//      Cell[][] mazeFour = new Cell[dimensions][dimensions];
+
+        int limit = 0;
+        SearchAlgo searchAlgo = new SearchAlgo(dimensions);
+
+        boolean firstIteration = true; //Recieved two solvable mazes, going to run first iteration
+
+        Map<String, String> parent1 = new HashMap<>();
+        Map<String, String> parent2 = new HashMap<>();
+        Map<String, String> child = new HashMap<>();
+
+        while (limit < 10) {
+
+            System.out.println("Pass1");
+            mazeOne = Copying(GenerateMazesRandomly());
+            mazeTwo = Copying(GenerateMazesRandomly());
+
+            if (firstIteration) {
+
+                if (userInput.equals("DFS")) {
+                    //run the maze in dfs
+                    parent1 = searchAlgo.dfs(mazeOne);
+                    parent2 = searchAlgo.dfs(mazeTwo);
+                    double parent1Val = calculateFitness(parent1);
+
+                    double parent2Val = calculateFitness(parent2);
+//                parent2.put("fitnessVal", String.valueOf(parent2Val));
+
+                    double tempVal;
+                    if (parent1Val >= parent2Val) {
+                        hardestSoFar = Copying(mazeOne);
+                        hardestSoFarVal = parent1Val;
+                    } else {
+                        hardestSoFar = Copying(mazeTwo);
+                        hardestSoFarVal = parent2Val;
+                    }
+                    Cell[][] mutated = new Cell[dimensions][dimensions];
+                    mutated = CrossOver(mazeOne, mazeTwo);
+                    if (isSolvable(mutated)) {
+                        child = searchAlgo.dfs(mutated);
+                        double childVal = calculateFitness(child);
+
+                        if (childVal >= hardestSoFarVal) {
+                            hardestSoFar = Copying(mutated);
+                            hardestSoFarVal = childVal;
+                        }
+
+                    }
+
+                } else if (userInput.equals("BFS")) {
+                    //run the maze in bfs
+                    parent1 = searchAlgo.bfs(mazeOne);
+                    parent2 = searchAlgo.bfs(mazeTwo);
+                    double parent1Val = calculateFitness(parent1);
+
+                    double parent2Val = calculateFitness(parent2);
+//                parent2.put("fitnessVal", String.valueOf(parent2Val));
+
+                    double tempVal;
+                    if (parent1Val >= parent2Val) {
+                        hardestSoFar = Copying(mazeOne);
+                        hardestSoFarVal = parent1Val;
+                    } else {
+                        hardestSoFar = Copying(mazeTwo);
+                        hardestSoFarVal = parent2Val;
+                    }
+                    Cell[][] mutated = new Cell[dimensions][dimensions];
+                    mutated = CrossOver(mazeOne, mazeTwo);
+                    if (isSolvable(mutated)) {
+                        child = searchAlgo.bfs(mutated);
+                        double childVal = calculateFitness(child);
+//                    System.out.println("****CHILD*********");
+//                    System.out.println(childVal);
+                        if (childVal >= hardestSoFarVal) {
+                            hardestSoFar = Copying(mutated);
+                            hardestSoFarVal = childVal;
+                        }
+
+                    }
+//                System.out.println("****PARENT 1*******");
+//                System.out.println(parent1Val);
+//                System.out.println("****PARENT 2*******");
+//                System.out.println(parent2Val);
+
+                } else if (userInput.equals("Euclidean")) {
+                    //run the maze in bfs
+                    parent1 = searchAlgo.EuclidianAstar(mazeOne);
+                    parent2 = searchAlgo.EuclidianAstar(mazeTwo);
+                    double parent1Val = calculateFitness(parent1);
+
+                    double parent2Val = calculateFitness(parent2);
+//                parent2.put("fitnessVal", String.valueOf(parent2Val));
+
+                    double tempVal;
+                    if (parent1Val >= parent2Val) {
+                        hardestSoFar = Copying(mazeOne);
+                        hardestSoFarVal = parent1Val;
+                    } else {
+                        hardestSoFar = Copying(mazeTwo);
+                        hardestSoFarVal = parent2Val;
+                    }
+                    Cell[][] mutated = new Cell[dimensions][dimensions];
+                    mutated = CrossOver(mazeOne, mazeTwo);
+                    if (isSolvable(mutated)) {
+                        child = searchAlgo.EuclidianAstar(mutated);
+                        double childVal = calculateFitness(child);
+//                    System.out.println("****CHILD*********");
+//                    System.out.println(childVal);
+                        if (childVal >= hardestSoFarVal) {
+                            hardestSoFar = Copying(mutated);
+                            hardestSoFarVal = childVal;
+                        }
+
+                    }
+                } else if (userInput.equals("Manhattan")) {
+                    //run the maze in bfs
+                    parent1 = searchAlgo.ManhattanAstar(mazeOne);
+                    parent2 = searchAlgo.ManhattanAstar(mazeTwo);
+                    double parent1Val = calculateFitness(parent1);
+
+                    double parent2Val = calculateFitness(parent2);
+//                parent2.put("fitnessVal", String.valueOf(parent2Val));
+
+                    double tempVal;
+                    if (parent1Val >= parent2Val) {
+                        hardestSoFar = Copying(mazeOne);
+                        hardestSoFarVal = parent1Val;
+                    } else {
+                        hardestSoFar = Copying(mazeTwo);
+                        hardestSoFarVal = parent2Val;
+                    }
+                    Cell[][] mutated = new Cell[dimensions][dimensions];
+                    mutated = CrossOver(mazeOne, mazeTwo);
+                    if (isSolvable(mutated)) {
+                        child = searchAlgo.ManhattanAstar(mutated);
+                        double childVal = calculateFitness(child);
+//                    System.out.println("****CHILD*********");
+//                    System.out.println(childVal);
+                        if (childVal >= hardestSoFarVal) {
+                            hardestSoFar = Copying(mutated);
+                            hardestSoFarVal = childVal;
+                        }
+
+                    }
+                }
+                firstIteration = false;
+                System.out.println("********HARDEST SO FAR******");
+                System.out.println(hardestSoFarVal);
+                printMazr(hardestSoFar);
+
+            } else {
+                Cell[][] maze2 = new Cell[dimensions][dimensions];
+                maze2 = Copying(GenerateMazesRandomly());
+
+                if (userInput.equals("DFS")) {
+                    //run the maze in dfs
+                    parent1 = searchAlgo.dfs(maze2);
+                    double parent1Val = calculateFitness(parent1);
+
+                    if (parent1Val >= hardestSoFarVal) {
+                        hardestSoFar = Copying(maze2);
+                        hardestSoFarVal = parent1Val;
+                    }
+
+                    Cell[][] mutated = new Cell[dimensions][dimensions];
+                    mutated = CrossOver(hardestSoFar, maze2);
+                    if (isSolvable(mutated)) {
+                        child = searchAlgo.dfs(mutated);
+                        double childVal = calculateFitness(child);
+
+                        if (childVal >= hardestSoFarVal) {
+                            hardestSoFar = Copying(mutated);
+                            hardestSoFarVal = childVal;
+                        }
+
+                    }
+
+                } else if (userInput.equals("BFS")) {
+                    //run the maze in dfs
+                    parent1 = searchAlgo.bfs(maze2);
+                    double parent1Val = calculateFitness(parent1);
+
+                    if (parent1Val >= hardestSoFarVal) {
+                        hardestSoFar = Copying(maze2);
+                        hardestSoFarVal = parent1Val;
+                    }
+
+                    Cell[][] mutated = new Cell[dimensions][dimensions];
+                    mutated = CrossOver(hardestSoFar, maze2);
+                    if (isSolvable(mutated)) {
+                        child = searchAlgo.bfs(mutated);
+                        double childVal = calculateFitness(child);
+
+                        if (childVal >= hardestSoFarVal) {
+                            hardestSoFar = Copying(mutated);
+                            hardestSoFarVal = childVal;
+                        }
+
+                    }
+
+                } else if (userInput.equals("Euclidean")) {
+                    //run the maze in dfs
+                    parent1 = searchAlgo.EuclidianAstar(maze2);
+                    double parent1Val = calculateFitness(parent1);
+
+                    if (parent1Val >= hardestSoFarVal) {
+                        hardestSoFar = Copying(maze2);
+                        hardestSoFarVal = parent1Val;
+                    }
+
+                    Cell[][] mutated = new Cell[dimensions][dimensions];
+                    mutated = CrossOver(hardestSoFar, maze2);
+                    if (isSolvable(mutated)) {
+                        child = searchAlgo.EuclidianAstar(mutated);
+                        double childVal = calculateFitness(child);
+
+                        if (childVal >= hardestSoFarVal) {
+                            hardestSoFar = Copying(mutated);
+                            hardestSoFarVal = childVal;
+                        }
+
+                    }
+                } else if (userInput.equals("Manhattan")) {
+                    //run the maze in dfs
+                    parent1 = searchAlgo.ManhattanAstar(maze2);
+                    double parent1Val = calculateFitness(parent1);
+
+                    if (parent1Val >= hardestSoFarVal) {
+                        hardestSoFar = Copying(maze2);
+                        hardestSoFarVal = parent1Val;
+                    }
+
+                    Cell[][] mutated = new Cell[dimensions][dimensions];
+                    mutated = CrossOver(hardestSoFar, maze2);
+                    if (isSolvable(mutated)) {
+                        child = searchAlgo.ManhattanAstar(mutated);
+                        double childVal = calculateFitness(child);
+
+                        if (childVal >= hardestSoFarVal) {
+                            hardestSoFar = Copying(mutated);
+                            hardestSoFarVal = childVal;
+                        }
+
+                    }
+                }
+
+            }
+
+            limit++;
+        }
+
+        System.out.println("********HARDEST SO FAR******");
+        System.out.println(hardestSoFarVal);
+        printMazr(hardestSoFar);
+    }
+
+
+    public boolean isSolvable(Cell[][] newMaze) {
 
         //Instant start = Instant.now();
         long start = System.currentTimeMillis();
@@ -98,23 +320,23 @@ public class GA {
         Stack<Cell> stack = new Stack<>();
         stack.add(newMaze[0][0]);
         isVisited[0][0] = true;
-        int moves =0;
+        int moves = 0;
         Map<Cell, Cell> path = new HashMap<>();
-        Map<String,Integer> getStepg = new HashMap<>();
+        Map<String, Integer> getStepg = new HashMap<>();
 
-        if(newMaze[1][0].getOccupied()!=-1){
+        if (newMaze[1][0].getOccupied() != -1) {
             isVisited[1][0] = true;
             stack.push(newMaze[1][0]);
-            path.put(newMaze[1][0],newMaze[0][0]);
+            path.put(newMaze[1][0], newMaze[0][0]);
 
         }
-        if(newMaze[0][1].getOccupied()!=-1){
+        if (newMaze[0][1].getOccupied() != -1) {
             isVisited[0][1] = true;
             stack.push(newMaze[1][0]);
-            path.put(newMaze[0][1],newMaze[0][0]);
+            path.put(newMaze[0][1], newMaze[0][0]);
 
         }
-        while(!stack.isEmpty()){
+        while (!stack.isEmpty()) {
 
             Cell temp = stack.pop();
 
@@ -123,47 +345,47 @@ public class GA {
             isVisited[tempX][tempY] = true;
             moves++;
 
-            if(tempX == dimensions-1 && tempY == dimensions-1){
-                getStepg.put("STEPS",moves);
+            if (tempX == dimensions - 1 && tempY == dimensions - 1) {
+                getStepg.put("STEPS", moves);
 
-                return getStepg;
+                return true;
             }
 
-            if(tempX-1>0 && !isVisited[tempX-1][tempY] && newMaze[tempX-1][tempY].getOccupied()!=-1 ){
-                stack.push(newMaze[tempX-1][tempY]);
-                path.put(newMaze[tempX-1][tempY],newMaze[tempX][tempY]);
-                isVisited[tempX-1][tempY] = true;
+            if (tempX - 1 > 0 && !isVisited[tempX - 1][tempY] && newMaze[tempX - 1][tempY].getOccupied() != -1) {
+                stack.push(newMaze[tempX - 1][tempY]);
+                path.put(newMaze[tempX - 1][tempY], newMaze[tempX][tempY]);
+                isVisited[tempX - 1][tempY] = true;
             }
-            if(tempY-1>0 && newMaze[tempX][tempY-1].getOccupied()!=-1 && !isVisited[tempX][tempY-1]){
-                stack.push(newMaze[tempX][tempY-1]);
-                path.put(newMaze[tempX][tempY-1],newMaze[tempX][tempY]);
-                isVisited[tempX][tempY-1] = true;
+            if (tempY - 1 > 0 && newMaze[tempX][tempY - 1].getOccupied() != -1 && !isVisited[tempX][tempY - 1]) {
+                stack.push(newMaze[tempX][tempY - 1]);
+                path.put(newMaze[tempX][tempY - 1], newMaze[tempX][tempY]);
+                isVisited[tempX][tempY - 1] = true;
             }
-            if(tempX+1<dimensions && newMaze[tempX+1][tempY].getOccupied()!=-1 && !isVisited[tempX+1][tempY] )
-            {
-                stack.push(newMaze[tempX+1][tempY]);
-                path.put(newMaze[tempX+1][tempY],newMaze[tempX][tempY]);
-                isVisited[tempX+1][tempY] = true;
+            if (tempX + 1 < dimensions && newMaze[tempX + 1][tempY].getOccupied() != -1 && !isVisited[tempX + 1][tempY]) {
+                stack.push(newMaze[tempX + 1][tempY]);
+                path.put(newMaze[tempX + 1][tempY], newMaze[tempX][tempY]);
+                isVisited[tempX + 1][tempY] = true;
 
             }
-            if(tempY+1<dimensions && newMaze[tempX][tempY+1].getOccupied()!=-1 && !isVisited[tempX][tempY+1]){
-                stack.push(newMaze[tempX][tempY+1]);
-                path.put(newMaze[tempX][tempY+1],newMaze[tempX][tempY]);
-                isVisited[tempX][tempY+1] = true;
+            if (tempY + 1 < dimensions && newMaze[tempX][tempY + 1].getOccupied() != -1 && !isVisited[tempX][tempY + 1]) {
+                stack.push(newMaze[tempX][tempY + 1]);
+                path.put(newMaze[tempX][tempY + 1], newMaze[tempX][tempY]);
+                isVisited[tempX][tempY + 1] = true;
             }
 
 
         }
 
 
-        return getStepg;
+        return false;
 
     }
-    public Cell[][] Copying (Cell[][] maze){
+
+    public Cell[][] Copying(Cell[][] maze) {
         Cell[][] copiedMaze = new Cell[dimensions][dimensions];
 
-        for(int i=0;i<maze.length;i++){
-            for (int j=0;j<dimensions;j++){
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < dimensions; j++) {
                 copiedMaze[i][j] = maze[i][j];
             }
         }
@@ -171,14 +393,63 @@ public class GA {
         return copiedMaze;
     }
 
-
-
-    public void printMazr(Cell[][] print){
-        for(int i=0;i<dimensions;i++){
-            for(int j=0;j<dimensions;j++){
+    public void printMazr(Cell[][] print) {
+        for (int i = 0; i < dimensions; i++) {
+            for (int j = 0; j < dimensions; j++) {
                 System.out.print(print[i][j].getOccupied() + "   ");
             }
             System.out.println();
         }
     }
+
+    private double calculateFitness(Map<String, String> map) {
+        /**
+         fitnessVal.put("PATHLEN",String.valueOf(NumberOfNodes));
+         fitnessVal.put("MAXFRINGE",String.valueOf(maxFinge));
+         fitnessVal.put("MOVES",String.valueOf(moves));
+         * */
+        return (0.333 * Double.parseDouble(map.get("MOVES"))) + (0.333 * Double.parseDouble(map.get("PATHLEN"))) + (0.333 * Double.parseDouble(map.get("MAXFRINGE")));
+    }
+
+    public Cell[][] CrossOver(Cell[][] mazeOne, Cell[][] mazeTwo) {
+        Cell[][] afterCrossOver = new Cell[dimensions][dimensions];
+
+        for (int i = 0; i < dimensions; i++) {
+            for (int j = 0; j < dimensions; j++) {
+                if (i + j + 2 <= dimensions) {
+                    afterCrossOver[i][j] = mazeOne[i][j];
+                } else {
+                    afterCrossOver[i][j] = mazeTwo[i][j];
+                    //afterCrossOver[i][j].setOccupied(100);
+                }
+            }
+        }
+
+        afterCrossOver = mutation(afterCrossOver);
+
+        //System.out.println(isSolvable(afterCrossOver) + " crossover ");
+
+
+        return afterCrossOver;
+    }
+
+    public Cell[][] mutation(Cell[][] afterCrossOver) {
+        Random random = new Random();
+        for (int i = 0; i <= dimensions / 2; i++) {
+            int x = random.nextInt(dimensions - 1);
+            int y = random.nextInt(dimensions - 1);
+
+            if (afterCrossOver[x][y].getOccupied() == 0) {
+                afterCrossOver[x][y].setOccupied(-1);
+            } else if (afterCrossOver[x][y].getOccupied() == -1) {
+                afterCrossOver[x][y].setOccupied(0);
+            }
+        }
+        afterCrossOver[0][0].setOccupied(0);
+        afterCrossOver[dimensions - 1][dimensions - 1].setOccupied(0);
+
+        return afterCrossOver;
+    }
+
+
 }
