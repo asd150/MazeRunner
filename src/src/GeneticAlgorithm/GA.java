@@ -65,23 +65,26 @@ public class GA {
         Map<String, String> parent2 = new HashMap<>();
         Map<String, String> child = new HashMap<>();
 
-        while (limit < 10) {
+        while (limit < 1) {
 
-            System.out.println("Pass1");
-            mazeOne = Copying(GenerateMazesRandomly());
-            mazeTwo = Copying(GenerateMazesRandomly());
+            //System.out.println("Pass1");
+
 
             if (firstIteration) {
-
+                mazeOne = Copying(GenerateMazesRandomly());
+                mazeTwo = Copying(GenerateMazesRandomly());
+                System.out.println(isSolvable(mazeOne) + " " + isSolvable(mazeTwo));
                 if (userInput.equals("DFS")) {
                     //run the maze in dfs
                     parent1 = searchAlgo.dfs(mazeOne);
                     parent2 = searchAlgo.dfs(mazeTwo);
+                    System.out.println(parent1.keySet());
+                    System.out.println(parent2.keySet());
                     double parent1Val = calculateFitness(parent1);
 
                     double parent2Val = calculateFitness(parent2);
 //                parent2.put("fitnessVal", String.valueOf(parent2Val));
-
+                   // System.out.println("Hardest3 " + isSolvable(hardestSoFar));
                     double tempVal;
                     if (parent1Val >= parent2Val) {
                         hardestSoFar = Copying(mazeOne);
@@ -90,18 +93,26 @@ public class GA {
                         hardestSoFar = Copying(mazeTwo);
                         hardestSoFarVal = parent2Val;
                     }
+                    System.out.println("Hardest1 " + isSolvable(hardestSoFar));
                     Cell[][] mutated = new Cell[dimensions][dimensions];
                     mutated = CrossOver(mazeOne, mazeTwo);
                     if (isSolvable(mutated)) {
+                        System.out.println("mutated "+isSolvable(mutated));
                         child = searchAlgo.dfs(mutated);
                         double childVal = calculateFitness(child);
 
+
                         if (childVal >= hardestSoFarVal) {
+                            System.out.println("HARDEST 4" + isSolvable(hardestSoFar));
                             hardestSoFar = Copying(mutated);
+                            System.out.println("HARDEST 5" + isSolvable(hardestSoFar));
                             hardestSoFarVal = childVal;
                         }
-
+                        firstIteration = false;
+                    }else{
+                        firstIteration = true;
                     }
+                    System.out.println("Hardest2 " + isSolvable(hardestSoFar));
 
                 } else if (userInput.equals("BFS")) {
                     //run the maze in bfs
@@ -158,6 +169,7 @@ public class GA {
                     Cell[][] mutated = new Cell[dimensions][dimensions];
                     mutated = CrossOver(mazeOne, mazeTwo);
                     if (isSolvable(mutated)) {
+                        firstIteration = true;
                         child = searchAlgo.EuclidianAstar(mutated);
                         double childVal = calculateFitness(child);
 //                    System.out.println("****CHILD*********");
@@ -168,6 +180,7 @@ public class GA {
                         }
 
                     }
+                    firstIteration = false;
                 } else if (userInput.equals("Manhattan")) {
                     //run the maze in bfs
                     parent1 = searchAlgo.ManhattanAstar(mazeOne);
@@ -199,7 +212,7 @@ public class GA {
 
                     }
                 }
-                firstIteration = false;
+                //firstIteration = false;
                 System.out.println("********HARDEST SO FAR******");
                 System.out.println(hardestSoFarVal);
                 printMazr(hardestSoFar);
@@ -308,6 +321,7 @@ public class GA {
         System.out.println("********HARDEST SO FAR******");
         System.out.println(hardestSoFarVal);
         printMazr(hardestSoFar);
+        System.out.println(isSolvable(hardestSoFar));
     }
 
 
@@ -408,6 +422,10 @@ public class GA {
          fitnessVal.put("MAXFRINGE",String.valueOf(maxFinge));
          fitnessVal.put("MOVES",String.valueOf(moves));
          * */
+        if(map.isEmpty()){
+            System.out.println("NOTMAT");
+            return 0;
+        }
         return (0.333 * Double.parseDouble(map.get("MOVES"))) + (0.333 * Double.parseDouble(map.get("PATHLEN"))) + (0.333 * Double.parseDouble(map.get("MAXFRINGE")));
     }
 
