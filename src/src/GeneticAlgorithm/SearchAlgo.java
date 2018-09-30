@@ -48,7 +48,7 @@ public class SearchAlgo {
 
                 fitnessVal.put("PATHLEN",String.valueOf(printPath(path,copiedMaze)));
                 fitnessVal.put("MAXFRINGE",String.valueOf(maxFringe));
-                fitnessVal.put("MOVES",String.valueOf(path.size()));
+                fitnessVal.put("MOVES",String.valueOf(moves));
 
 //                System.out.println("A* found path");
 //                System.out.println(moves);
