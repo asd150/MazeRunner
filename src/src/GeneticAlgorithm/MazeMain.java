@@ -6,7 +6,7 @@ public class MazeMain {
     public static void main(String[] args){
      GA GAClass = new GA(100,0.2);
      Cell[][] result = new Cell[100][100];
-     result = GAClass.start("Euclidean");
+     result = GAClass.start("DFS");
      SearchAlgo searchAlgo = new SearchAlgo(100);
      Map<String,String> bfs = searchAlgo.bfs(result);
         Map<String,String> dfs = searchAlgo.dfs(result);

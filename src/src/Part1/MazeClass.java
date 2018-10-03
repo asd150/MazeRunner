@@ -84,11 +84,11 @@ public class MazeClass {
 
             if(x==dimensions-1 && y == dimensions-1){
                 System.out.println("Path found BFS");
-                System.out.println(currentMoves);
+                System.out.println("Total Steps Taken "+currentMoves);
 
                 long endTime = System.currentTimeMillis();
-                System.out.println((endTime-startTime)/60 + " s");
-                printPath(path);
+                System.out.println("Time Taken "+(endTime-startTime)/60 + " s");
+                //printPath(path);
                 return path;
             }
 
@@ -158,14 +158,15 @@ public class MazeClass {
             moves++;
             //System.out.println(tempX + " " + tempY);
             if(tempX == dimensions-1 && tempY == dimensions-1){
-                System.out.println(moves + " Path found dfs ");
+                System.out.println("DFS Found path");
+                System.out.println("Total Steps Taken " + moves);
 
                 long end = System.currentTimeMillis();
-                System.out.println((end-start)/60 + " s");
+                System.out.println("Time Taken"+(end-start)/60 + " s");
 
                 //Instant end = Instant.now();
                 //System.out.println(Duration.between(start,end));
-                printPath(path);
+              //  printPath(path);
                 return true;
             }
 
@@ -230,10 +231,10 @@ public class MazeClass {
             if(x==dimensions-1 && y == dimensions-1){
                 long end = System.currentTimeMillis();
 
-                System.out.println("A* found path");
-                System.out.println(moves);
-                System.out.println((end-start)/60 + " s");
-                printPath(path);
+                System.out.println("A* Euclidean found path");
+                System.out.println("Total Steps Taken : "+moves);
+                System.out.println("Time Taken "+(end-start)/60 + " s");
+               // printPath(path);
                 return true;
             }
 
@@ -274,7 +275,7 @@ public class MazeClass {
             moves++;
         }
 
-        System.out.println("A* path not found");
+        System.out.println("A* Euclidean path not found");
         return false;
     }
 
@@ -309,10 +310,10 @@ public class MazeClass {
             if(x==dimensions-1 && y == dimensions-1){
                 long end = System.currentTimeMillis();
 
-                System.out.println("A* found path");
-                System.out.println(moves);
-                System.out.println((end-start)/60 + " s");
-                printPath(path);
+                System.out.println("A* Manhattan found path");
+                System.out.println("Total Steps Taken : " + moves);
+                System.out.println("Time Taken : "+(end-start)/60 + " s");
+               // printPath(path);
                 return true;
             }
 
