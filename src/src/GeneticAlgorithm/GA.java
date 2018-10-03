@@ -252,7 +252,7 @@ public class GA {
                 //azr(hardestSoFar);
 
             } else {
-                System.out.println("ENTER2");
+             //   System.out.println("ENTER2");
                 Cell[][] maze2 = new Cell[dimensions][dimensions];
                 maze2 = Copying(GenerateMazesRandomly());
 
