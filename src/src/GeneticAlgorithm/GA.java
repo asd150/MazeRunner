@@ -68,7 +68,7 @@ public class GA {
         Map<String, String> parent2 = new HashMap<>();
         Map<String, String> child = new HashMap<>();
 
-        while (limit < 5000) {
+        while (limit < 500) {
 
             //System.out.println("Pass1");
 
@@ -78,13 +78,13 @@ public class GA {
                 mazeTwo = Copying(GenerateMazesRandomly());
                 mazeOneCopy = Copying(mazeOne);
                 mazeTwoCopy = Copying(mazeTwo);
-                System.out.println(isSolvable(mazeOne) + " " + isSolvable(mazeTwo));
+                //System.out.println(isSolvable(mazeOne) + " " + isSolvable(mazeTwo));
                 if (userInput.equals("DFS")) {
                     //run the maze in dfs
                     parent1 = searchAlgo.dfs(mazeOneCopy);
                     parent2 = searchAlgo.dfs(mazeTwoCopy);
-                    System.out.println(parent1.keySet());
-                    System.out.println(parent2.keySet());
+                   // System.out.println(parent1.keySet());
+                    //System.out.println(parent2.keySet());
                     double parent1Val = calculateFitness(parent1);
 
                     double parent2Val = calculateFitness(parent2);
@@ -106,15 +106,15 @@ public class GA {
                     //System.out.println("Hardest1 " + isSolvable(hardestSoFar));
                     Cell[][] mutated = new Cell[dimensions][dimensions];
                     Cell[][] mutatedCopy = new Cell[dimensions][dimensions];
-                    System.out.println("Hardest21 " + isSolvable(hardestSoFar));
+                    //System.out.println("Hardest21 " + isSolvable(hardestSoFar));
                     mutated = CrossOver(mazeOneCopy, mazeTwoCopy);
-                    mutated = mutation(mutated);
 
-                    System.out.println("Hardest22 " + isSolvable(hardestSoFar));
-                    mutatedCopy = Copying(mutated);
-                    if (isSolvable(mutatedCopy)) {
+
+                    //System.out.println("Hardest22 " + isSolvable(hardestSoFar));
+                   // mutatedCopy = Copying(mutated);
+                    if (isSolvable(mutated)) {
                         //System.out.println("mutated "+isSolvable(mutated));
-                        child = searchAlgo.dfs(mutatedCopy);
+                        child = searchAlgo.dfs(mutated);
                         double childVal = calculateFitness(child);
 
 
@@ -153,18 +153,18 @@ public class GA {
                     }
                     //System.out.println("+++++++++++++++++++++++++++++");
                     Cell[][] mutated = new Cell[dimensions][dimensions];
-                    Cell[][] mutatedCopy = new Cell[dimensions][dimensions];
-                    Cell[][] fitCopy = Copying(hardestSoFar);
-                    System.out.println("COPY1 " + isSolvable(fitCopy));
-                    System.out.println("+++++++++++++++++++++++++++++");
-                    System.out.println("1 "+isSolvable(hardestSoFar));
-                    mutatedCopy = Copying(CrossOver(mazeOneCopy, mazeTwoCopy));
-                    System.out.println("2 "+isSolvable(hardestSoFar));
-                    mutated = Copying(mutation(mutatedCopy));
+                   // Cell[][] mutatedCopy = new Cell[dimensions][dimensions];
+                    //Cell[][] fitCopy = Copying(hardestSoFar);
+                    //System.out.println("COPY1 " + isSolvable(fitCopy));
+                   // System.out.println("+++++++++++++++++++++++++++++");
+                   // System.out.println("1 "+isSolvable(hardestSoFar));
+                    mutated = Copying(CrossOver(mazeOneCopy, mazeTwoCopy));
+                    //System.out.println("2 "+isSolvable(hardestSoFar));
+                    //mutated = Copying(mutation(mutatedCopy));
 
-                    System.out.println("3 "+isSolvable(hardestSoFar));
-                    System.out.println("+++++++++++++++++++++++++++++");
-                    System.out.println("COPY2 " + isSolvable(fitCopy));
+//                    System.out.println("3 "+isSolvable(hardestSoFar));
+//                    System.out.println("+++++++++++++++++++++++++++++");
+//                    System.out.println("COPY2 " + isSolvable(fitCopy));
                     if (isSolvable(mutated)) {
                         child = searchAlgo.bfs(mutated);
                         double childVal = calculateFitness(child);
@@ -203,7 +203,7 @@ public class GA {
                     Cell[][] mutated = new Cell[dimensions][dimensions];
                     mutated = CrossOver(mazeOne, mazeTwo);
                     if (isSolvable(mutated)) {
-                        firstIteration = true;
+                        //firstIteration = true;
                         child = searchAlgo.EuclidianAstar(mutated);
                         double childVal = calculateFitness(child);
 //                    System.out.println("****CHILD*********");
@@ -211,10 +211,11 @@ public class GA {
                         if (childVal >= hardestSoFarVal) {
                             hardestSoFar = Copying(mutated);
                             hardestSoFarVal = childVal;
+                            firstIteration = false;
                         }
 
                     }
-                    firstIteration = false;
+
                 } else if (userInput.equals("Manhattan")) {
                     //run the maze in bfs
                     parent1 = searchAlgo.ManhattanAstar(mazeOne);
@@ -242,17 +243,18 @@ public class GA {
                         if (childVal >= hardestSoFarVal) {
                             hardestSoFar = Copying(mutated);
                             hardestSoFarVal = childVal;
+                            firstIteration = false;
                         }
 
                     }
                 }
                 //firstIteration = false;
-                System.out.println("********HARDEST SO FAR******");
-                System.out.println(hardestSoFarVal);
+               // System.out.println("********HARDEST SO FAR******");
+                //System.out.println(hardestSoFarVal);
                 //azr(hardestSoFar);
 
             } else {
-                System.out.println("ENTER2");
+                //System.out.println("ENTER2");
                 Cell[][] maze2 = new Cell[dimensions][dimensions];
                 maze2 = Copying(GenerateMazesRandomly());
 
@@ -269,6 +271,7 @@ public class GA {
                     Cell[][] mutated = new Cell[dimensions][dimensions];
 
                     mutated = CrossOver(hardestSoFar, maze2);
+                    //mutated = mutation(mutated);
                     if (isSolvable(mutated)) {
                         child = searchAlgo.dfs(mutated);
                         double childVal = calculateFitness(child);
@@ -293,7 +296,7 @@ public class GA {
                     Cell[][] mutated = new Cell[dimensions][dimensions];
 
                     mutated = CrossOver(hardestSoFar, maze2);
-                    mutated = mutation(mutated);
+                   // mutated = mutation(mutated);
                     if (isSolvable(mutated)) {
                         child = searchAlgo.bfs(mutated);
                         double childVal = calculateFitness(child);
@@ -358,17 +361,28 @@ public class GA {
         }
 
        // System.out.println("********HARDEST SO FAR******");
-        System.out.println(hardestSoFarVal);
-        printMazr(hardestSoFar);
-        System.out.println(isSolvable(hardestSoFar));
+        //System.out.println(hardestSoFarVal);
+       // printMazr(hardestSoFar);
+        //System.out.println(isSolvable(hardestSoFar));
         if(isSolvable(hardestSoFar)){
+       // printMazr(hardestSoFar);
 
+             Map<String,String> x = searchAlgo.bfs(hardestSoFar);
+            Map<String,String> dfs = searchAlgo.dfs(hardestSoFar);
+            Map<String,String> eu = searchAlgo.EuclidianAstar(hardestSoFar);
+            Map<String,String> ma = searchAlgo.ManhattanAstar(hardestSoFar);
+
+        System.out.println("BFS : " + x.get("PATHLEN") + " " + x.get("MOVES") + " " + x.get("MAXFRINGE"));
+            System.out.println("DFS : " + dfs.get("PATHLEN") + " " + dfs.get("MOVES") + " " + dfs.get("MAXFRINGE"));
+            System.out.println("EUCIDEAN : " + eu.get("PATHLEN") + " " + eu.get("MOVES") + " " + eu.get("MAXFRINGE"));
+            System.out.println("MANHATTAN : " + ma.get("PATHLEN") + " " + ma.get("MOVES") + " " + ma.get("MAXFRINGE"));
+            return hardestSoFar;
         }
         else {
             //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5");
             start(userInput);
         }
-return hardestSoFar;
+return null;
     }
 
 
@@ -470,10 +484,10 @@ return hardestSoFar;
          fitnessVal.put("MOVES",String.valueOf(moves));
          * */
         if(map.isEmpty()){
-            System.out.println("NOTMAT");
-            return 0;
+            //System.out.println("NOTMAT");
+            return -1;
         }
-        return (0.333 * Double.parseDouble(map.get("MOVES"))) + (0.333 * Double.parseDouble(map.get("PATHLEN"))) + (0.333 * Double.parseDouble(map.get("MAXFRINGE")));
+        return (0.25 * Double.parseDouble(map.get("MOVES"))) + (0.5 * Double.parseDouble(map.get("PATHLEN"))) + (0.25 * Double.parseDouble(map.get("MAXFRINGE")));
     }
 
     public Cell[][] CrossOver(Cell[][] mazeOne, Cell[][] mazeTwo) {
@@ -489,6 +503,23 @@ return hardestSoFar;
                 }
             }
         }
+       // System.out.println("Before mutation" + isSolvable(afterCrossOver));
+        Random random = new Random();
+        for (int i = 0; i <= dimensions / 2; i++) {
+            int x = random.nextInt(dimensions - 1);
+            int y = random.nextInt(dimensions - 1);
+
+            if (afterCrossOver[x][y].getOccupied() == 0) {
+                afterCrossOver[x][y].setOccupied(-1);
+            } else {
+                afterCrossOver[x][y].setOccupied(0);
+            }
+        }
+        ///System.out.println("After mutation" + isSolvable(afterCrossOver));
+        afterCrossOver[0][0].setOccupied(0);
+        afterCrossOver[dimensions - 1][dimensions - 1].setOccupied(0);
+        //Cell[][] copy = new Cell[dimensions][dimensions];
+
   //      System.out.println(isSolvable(afterCrossOver) + " crossover111 ");
        // afterCrossOver = mutation(afterCrossOver);
 
@@ -506,13 +537,13 @@ return hardestSoFar;
 
             if (afterCrossOver[x][y].getOccupied() == 0) {
                 afterCrossOver[x][y].setOccupied(-1);
-            } else if (afterCrossOver[x][y].getOccupied() == -1) {
+            } else {
                 afterCrossOver[x][y].setOccupied(0);
-            }else {}
+            }
         }
         afterCrossOver[0][0].setOccupied(0);
         afterCrossOver[dimensions - 1][dimensions - 1].setOccupied(0);
-        System.out.println("MUTATION" + isSolvable(afterCrossOver));
+       // System.out.println("MUTATION" + isSolvable(afterCrossOver));
         return afterCrossOver;
     }
 

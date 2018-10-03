@@ -348,7 +348,7 @@ public class MazeClass {
             moves++;
         }
 
-        System.out.println("A* path not found");
+        //System.out.println("A* path not found");
         return false;
     }
 

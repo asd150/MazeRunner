@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class MazeMain {
     public static void main(String[] args){
-        MazeClass mazeClass = new MazeClass(500 ,0.3);
+        MazeClass mazeClass = new MazeClass(500 ,0.2);
         Cell[][] maze = mazeClass.map;
         //Cell[][] maze1 = maze;
 //               if(maze==null){

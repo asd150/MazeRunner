@@ -1,4 +1,5 @@
-package GeneticAlgorithm;
+import GeneticAlgorithm.Cell;
+import GeneticAlgorithm.MazeClass;
 
 import java.security.cert.TrustAnchor;
 import java.util.*;
@@ -16,7 +17,7 @@ public class GeneticAlgorithms {
 
     public void Start(String algo){
 
-      int dim = dimensions = 500;
+      int dim = dimensions = 50;
       double prob = this.prob =  0.3;
       MazeClass mazeClass = new MazeClass(5,0.3);
 

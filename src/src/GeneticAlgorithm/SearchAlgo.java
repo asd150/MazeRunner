@@ -12,8 +12,8 @@ public class SearchAlgo {
 
     public Map<String, String> EuclidianAstar(Cell[][] copiedMaze){
 
+        HashMap<String, String> fitnessVal = new HashMap<>();
         int maxFringe = 0;
-        Map<String, String> fitnessVal = new HashMap<>();
         long start = System.currentTimeMillis();
         boolean[][ ] visitedTrack = new boolean[dimensions][dimensions];
         Queue<Cell> queue = new PriorityQueue<>(new Comparator<Cell>() {
@@ -30,6 +30,7 @@ public class SearchAlgo {
         copiedMaze[0][0].setTotalDistance(0);
 
 
+
         queue.add(copiedMaze[0][0]);
         copiedMaze[0][0].setHeuristic(euclidianHeuristic(0,0));
         int moves =0;
@@ -39,21 +40,24 @@ public class SearchAlgo {
             int x = temp.getX();
             int y = temp.getY();
             long cost  = copiedMaze[x][y].getTotalDistance();
-
+            visitedTrack[x][y] = true;
             if(maxFringe <= queue.size()){
                 maxFringe = queue.size();
             }
+
             if(x==dimensions-1 && y == dimensions-1){
                 long end = System.currentTimeMillis();
 
-                fitnessVal.put("PATHLEN",String.valueOf(printPath(path,copiedMaze)));
-                fitnessVal.put("MAXFRINGE",String.valueOf(maxFringe));
-                fitnessVal.put("MOVES",String.valueOf(moves));
+                int NumberOfNodes = printPath(path,copiedMaze);
 
 //                System.out.println("A* found path");
 //                System.out.println(moves);
 //                System.out.println((end-start)/60 + " s");
-              //  printPath(path);
+//                //printPath(path);
+
+                fitnessVal.put("PATHLEN",String.valueOf(NumberOfNodes));
+                fitnessVal.put("MAXFRINGE",String.valueOf(maxFringe));
+                fitnessVal.put("MOVES",String.valueOf(moves));
                 return fitnessVal;
             }
 
@@ -94,7 +98,7 @@ public class SearchAlgo {
             moves++;
         }
 
-        System.out.println("A* path not found");
+        // System.out.println("A* path not found");
         return fitnessVal;
     }
 
@@ -127,7 +131,7 @@ public class SearchAlgo {
             int x = temp.getX();
             int y = temp.getY();
             long cost  = copiedMaze[x][y].getTotalDistance();
-
+            visitedTrack[x][y] = true;
             if(maxFringe <= queue.size()){
                 maxFringe = queue.size();
             }
