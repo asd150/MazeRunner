@@ -10,7 +10,7 @@ public class SearchAlgo {
     }
 
 
-    public Map<String, String> EuclidianAstar(Cell[][] copiedMaze){
+    public Map<String, String> EuclidianAstar(Cell[][] copiedMaze,boolean bool){
 
         HashMap<String, String> fitnessVal = new HashMap<>();
         int maxFringe = 0;
@@ -48,7 +48,14 @@ public class SearchAlgo {
             if(x==dimensions-1 && y == dimensions-1){
                 long end = System.currentTimeMillis();
 
-                int NumberOfNodes = printPath(path,copiedMaze);
+                int NumberOfNodes;
+                if(bool){
+                    NumberOfNodes=    printPath(path,copiedMaze,true);
+                }
+                else
+                {
+                    NumberOfNodes = printPath(path,copiedMaze,false);
+                }
 
 //                System.out.println("A* found path");
 //                System.out.println(moves);
@@ -102,7 +109,7 @@ public class SearchAlgo {
         return fitnessVal;
     }
 
-    public Map<String, String> ManhattanAstar(Cell[][] copiedMaze){
+    public Map<String, String> ManhattanAstar(Cell[][] copiedMaze, boolean bool){
         HashMap<String, String> fitnessVal = new HashMap<>();
         int maxFringe = 0;
         long start = System.currentTimeMillis();
@@ -139,7 +146,14 @@ public class SearchAlgo {
             if(x==dimensions-1 && y == dimensions-1){
                 long end = System.currentTimeMillis();
 
-                int NumberOfNodes = printPath(path,copiedMaze);
+                int NumberOfNodes;
+                if(bool){
+                    NumberOfNodes=    printPath(path,copiedMaze,true);
+                }
+                else
+                {
+                    NumberOfNodes = printPath(path,copiedMaze,false);
+                }
 
 //                System.out.println("A* found path");
 //                System.out.println(moves);
@@ -201,7 +215,7 @@ public class SearchAlgo {
         return Math.abs((dimensions-1-x)+(dimensions-1-y));
     }
 
-    public Map<String, String> bfs(Cell[][] newMaze){
+    public Map<String, String> bfs(Cell[][] newMaze,boolean bool){
 
         int maxFringe = 0;
         long startTime =  System.currentTimeMillis();
@@ -242,7 +256,15 @@ public class SearchAlgo {
             }
 
             if(x==dimensions-1 && y == dimensions-1){
-                fitnessVal.put("PATHLEN",String.valueOf(printPath(path,newMaze)));
+                int NumberOfNodes;
+                if(bool){
+                    NumberOfNodes=    printPath(path,newMaze,true);
+                }
+                else
+                {
+                    NumberOfNodes = printPath(path,newMaze,false);
+                }
+                fitnessVal.put("PATHLEN",String.valueOf(NumberOfNodes));
                 fitnessVal.put("MAXFRINGE",String.valueOf(maxFringe));
                 fitnessVal.put("MOVES",String.valueOf(currentMoves));
                 return fitnessVal;
@@ -283,7 +305,7 @@ public class SearchAlgo {
         return fitnessVal;
     }
 
-    public Map<String,String> dfs( Cell[][] newMaze)
+    public Map<String,String> dfs( Cell[][] newMaze,boolean bool)
     {
         //Instant start = Instant.now();
         long start = System.currentTimeMillis();
@@ -326,8 +348,14 @@ public class SearchAlgo {
             //System.out.println(tempX + " " + tempY);
             if(tempX == dimensions-1 && tempY == dimensions-1){
                 //System.out.println(moves + " Path found dfs ");
-                int NumberOfNodes = printPath(path,newMaze);
                 long end = System.currentTimeMillis();
+                int NumberOfNodes;
+                if(bool){
+                    NumberOfNodes =  printPath(path,newMaze,bool);
+                }
+                else{
+                     NumberOfNodes =  printPath(path,newMaze,bool);
+                }
                 fitnessVal.put("PATHLEN",String.valueOf(NumberOfNodes));
                 fitnessVal.put("MAXFRINGE",String.valueOf(maxFinge));
                 fitnessVal.put("MOVES",String.valueOf(moves));
@@ -365,7 +393,7 @@ public class SearchAlgo {
     }
 
 
-    private int printPath(Map<Cell, Cell> path, Cell[][] map){
+    private int printPath(Map<Cell, Cell> path, Cell[][] map,boolean bool){
         Cell key = map[dimensions-1][dimensions-1];
         // System.out.println("key" + key.getX() + " " + key.getY());
 
@@ -382,7 +410,31 @@ public class SearchAlgo {
                 path.clear();
             }
         }
+        int size = arrayList.size();
+        if(bool) {
 
-        return arrayList.size();
+
+            tracePath(arrayList,map);
+        }
+        return size;
+    }
+
+    private void tracePath(ArrayList<Cell> list,Cell[][] map){
+
+        for(int i=0;i<dimensions;i++){
+            for(int j=0;j<dimensions;j++){
+                if(list.contains(map[i][j])){
+                    System.out.print(" *  ");
+                    list.remove(map[i][j]);
+                }
+                else{
+                    System.out.print(map[i][j].getOccupied() + "      ");
+                }
+
+            }
+            System.out.println();
+        }
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
     }
 }

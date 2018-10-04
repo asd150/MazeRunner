@@ -88,7 +88,7 @@ public class MazeClass {
 
                 long endTime = System.currentTimeMillis();
                 System.out.println((endTime - startTime) / 60 + " s");
-                printPath(path);
+                printPath(path,newMaze);
                 return path;
             }
 
@@ -123,10 +123,10 @@ public class MazeClass {
         return path;
     }
 
-    public boolean dfs() {
+    public boolean dfs(Cell[][] newMaze) {
         //Instant start = Instant.now();
         long start = System.currentTimeMillis();
-        Cell[][] newMaze = copyingMaze();
+
         boolean[][] isVisited = new boolean[dimensions][dimensions];
         Stack<Cell> stack = new Stack<>();
         stack.add(newMaze[0][0]);
@@ -163,7 +163,7 @@ public class MazeClass {
 
                 //Instant end = Instant.now();
                 //System.out.println(Duration.between(start,end));
-                printPath(path);
+                printPath(path,newMaze);
                 return true;
             }
 
@@ -229,7 +229,7 @@ public class MazeClass {
                 System.out.println("A* found path");
                 System.out.println(moves);
                 System.out.println((end - start) / 60 + " s");
-                printPath(path);
+                printPath(path,copiedMaze);
                 return true;
             }
 
@@ -307,7 +307,7 @@ public class MazeClass {
                 System.out.println("A* found path");
                 System.out.println(moves);
                 System.out.println((end - start) / 60 + " s");
-                printPath(path);
+                printPath(path,copiedMaze);
                 return true;
             }
 
@@ -373,7 +373,7 @@ public class MazeClass {
     }
 
 
-    private void printPath(Map<Cell, Cell> path) {
+    private void printPath(Map<Cell, Cell> path,Cell[][] maze) {
         Cell key = map[dimensions - 1][dimensions - 1];
         // System.out.println("key" + key.getX() + " " + key.getY());
 
@@ -386,14 +386,21 @@ public class MazeClass {
                 arrayList.add(key);
 
             } else {
-                path.clear();
+                //path.clear();
             }
         }
         //System.out.println(arrayList.size());
-        for (int i = arrayList.size() - 1; i > 0; i--) {
-            System.out.print("(" + arrayList.get(i).getX() + " " + arrayList.get(i).getY() + ") ");
-
+        for(int i=0;i<arrayList.size();i++){
+            System.out.print(arrayList.get(i).getX());
+            System.out.println(arrayList.get(i).getY());
         }
+
+
+    }
+    private void tracePath(ArrayList<Cell> list,Cell[][] maze){
+
+
+
     }
 
 }

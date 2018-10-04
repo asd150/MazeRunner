@@ -17,8 +17,8 @@ public class GA {
     private double probability;
     private MazeClass mazeClass = null;
     private int num = 0;
-    private Map<Integer, Integer> storeSteps = new HashMap<>();
-    private double[] storeProbability = new double[4];
+    //private Map<Integer, Integer> storeSteps = new HashMap<>();
+   // private double[] storeProbability = new double[4];
 
     public GA(int dim, double prob) {
         this.dimensions = dim;
@@ -81,8 +81,8 @@ public class GA {
                 //System.out.println(isSolvable(mazeOne) + " " + isSolvable(mazeTwo));
                 if (userInput.equals("DFS")) {
                     //run the maze in dfs
-                    parent1 = searchAlgo.dfs(mazeOneCopy);
-                    parent2 = searchAlgo.dfs(mazeTwoCopy);
+                    parent1 = searchAlgo.dfs(mazeOneCopy,false);
+                    parent2 = searchAlgo.dfs(mazeTwoCopy,false);
                    // System.out.println(parent1.keySet());
                     //System.out.println(parent2.keySet());
                     double parent1Val = calculateFitness(parent1);
@@ -114,7 +114,7 @@ public class GA {
                    // mutatedCopy = Copying(mutated);
                     if (isSolvable(mutated)) {
                         //System.out.println("mutated "+isSolvable(mutated));
-                        child = searchAlgo.dfs(mutated);
+                        child = searchAlgo.dfs(mutated,false);
                         double childVal = calculateFitness(child);
 
 
@@ -136,8 +136,8 @@ public class GA {
 
                 } else if (userInput.equals("BFS")) {
                     //run the maze in bfs
-                    parent1 = searchAlgo.bfs(mazeOneCopy);
-                    parent2 = searchAlgo.bfs(mazeTwoCopy);
+                    parent1 = searchAlgo.bfs(mazeOneCopy,false);
+                    parent2 = searchAlgo.bfs(mazeTwoCopy,false);
                     double parent1Val = calculateFitness(parent1);
 
                     double parent2Val = calculateFitness(parent2);
@@ -166,7 +166,7 @@ public class GA {
 //                    System.out.println("+++++++++++++++++++++++++++++");
 //                    System.out.println("COPY2 " + isSolvable(fitCopy));
                     if (isSolvable(mutated)) {
-                        child = searchAlgo.bfs(mutated);
+                        child = searchAlgo.bfs(mutated,false);
                         double childVal = calculateFitness(child);
 //                    System.out.println("****CHILD*********");
 //                    System.out.println(childVal);
@@ -185,8 +185,8 @@ public class GA {
 
                 } else if (userInput.equals("Euclidean")) {
                     //run the maze in bfs
-                    parent1 = searchAlgo.EuclidianAstar(mazeOne);
-                    parent2 = searchAlgo.EuclidianAstar(mazeTwo);
+                    parent1 = searchAlgo.EuclidianAstar(mazeOne,false);
+                    parent2 = searchAlgo.EuclidianAstar(mazeTwo,false);
                     double parent1Val = calculateFitness(parent1);
 
                     double parent2Val = calculateFitness(parent2);
@@ -204,7 +204,7 @@ public class GA {
                     mutated = CrossOver(mazeOne, mazeTwo);
                     if (isSolvable(mutated)) {
                         //firstIteration = true;
-                        child = searchAlgo.EuclidianAstar(mutated);
+                        child = searchAlgo.EuclidianAstar(mutated,false);
                         double childVal = calculateFitness(child);
 //                    System.out.println("****CHILD*********");
 //                    System.out.println(childVal);
@@ -218,8 +218,8 @@ public class GA {
 
                 } else if (userInput.equals("Manhattan")) {
                     //run the maze in bfs
-                    parent1 = searchAlgo.ManhattanAstar(mazeOne);
-                    parent2 = searchAlgo.ManhattanAstar(mazeTwo);
+                    parent1 = searchAlgo.ManhattanAstar(mazeOne,false);
+                    parent2 = searchAlgo.ManhattanAstar(mazeTwo,false);
                     double parent1Val = calculateFitness(parent1);
 
                     double parent2Val = calculateFitness(parent2);
@@ -236,7 +236,7 @@ public class GA {
                     Cell[][] mutated = new Cell[dimensions][dimensions];
                     mutated = CrossOver(mazeOne, mazeTwo);
                     if (isSolvable(mutated)) {
-                        child = searchAlgo.ManhattanAstar(mutated);
+                        child = searchAlgo.ManhattanAstar(mutated,false);
                         double childVal = calculateFitness(child);
 //                    System.out.println("****CHILD*********");
 //                    System.out.println(childVal);
@@ -260,7 +260,7 @@ public class GA {
 
                 if (userInput.equals("DFS")) {
                     //run the maze in dfs
-                    parent1 = searchAlgo.dfs(maze2);
+                    parent1 = searchAlgo.dfs(maze2,false);
                     double parent1Val = calculateFitness(parent1);
 
                     if (parent1Val >= hardestSoFarVal) {
@@ -273,7 +273,7 @@ public class GA {
                     mutated = CrossOver(hardestSoFar, maze2);
                     //mutated = mutation(mutated);
                     if (isSolvable(mutated)) {
-                        child = searchAlgo.dfs(mutated);
+                        child = searchAlgo.dfs(mutated,false);
                         double childVal = calculateFitness(child);
 
                         if (childVal >= hardestSoFarVal) {
@@ -285,7 +285,7 @@ public class GA {
 
                 } else if (userInput.equals("BFS")) {
                     //run the maze in dfs
-                    parent1 = searchAlgo.bfs(maze2);
+                    parent1 = searchAlgo.bfs(maze2,false);
                     double parent1Val = calculateFitness(parent1);
 
                     if (parent1Val >= hardestSoFarVal) {
@@ -298,7 +298,7 @@ public class GA {
                     mutated = CrossOver(hardestSoFar, maze2);
                    // mutated = mutation(mutated);
                     if (isSolvable(mutated)) {
-                        child = searchAlgo.bfs(mutated);
+                        child = searchAlgo.bfs(mutated,false);
                         double childVal = calculateFitness(child);
 
                         if (childVal >= hardestSoFarVal) {
@@ -311,7 +311,7 @@ public class GA {
 
                 } else if (userInput.equals("Euclidean")) {
                     //run the maze in dfs
-                    parent1 = searchAlgo.EuclidianAstar(maze2);
+                    parent1 = searchAlgo.EuclidianAstar(maze2,false);
                     double parent1Val = calculateFitness(parent1);
 
                     if (parent1Val >= hardestSoFarVal) {
@@ -322,7 +322,7 @@ public class GA {
                     Cell[][] mutated = new Cell[dimensions][dimensions];
                     mutated = CrossOver(hardestSoFar, maze2);
                     if (isSolvable(mutated)) {
-                        child = searchAlgo.EuclidianAstar(mutated);
+                        child = searchAlgo.EuclidianAstar(mutated,false);
                         double childVal = calculateFitness(child);
 
                         if (childVal >= hardestSoFarVal) {
@@ -333,7 +333,7 @@ public class GA {
                     }
                 } else if (userInput.equals("Manhattan")) {
                     //run the maze in dfs
-                    parent1 = searchAlgo.ManhattanAstar(maze2);
+                    parent1 = searchAlgo.ManhattanAstar(maze2,false);
                     double parent1Val = calculateFitness(parent1);
 
                     if (parent1Val >= hardestSoFarVal) {
@@ -344,7 +344,7 @@ public class GA {
                     Cell[][] mutated = new Cell[dimensions][dimensions];
                     mutated = CrossOver(hardestSoFar, maze2);
                     if (isSolvable(mutated)) {
-                        child = searchAlgo.ManhattanAstar(mutated);
+                        child = searchAlgo.ManhattanAstar(mutated,false);
                         double childVal = calculateFitness(child);
 
                         if (childVal >= hardestSoFarVal) {
@@ -367,15 +367,41 @@ public class GA {
         if(isSolvable(hardestSoFar)){
        // printMazr(hardestSoFar);
 
-             Map<String,String> x = searchAlgo.bfs(hardestSoFar);
-            Map<String,String> dfs = searchAlgo.dfs(hardestSoFar);
-            Map<String,String> eu = searchAlgo.EuclidianAstar(hardestSoFar);
-            Map<String,String> ma = searchAlgo.ManhattanAstar(hardestSoFar);
+            if(userInput.equals("DFS")) {
+                System.out.println("Start");
+                Map<String, String> x = searchAlgo.dfs(hardestSoFar, true);
+                System.out.println("DFS : " + x.get("PATHLEN") + " " + x.get("MOVES") + " " + x.get("MAXFRINGE"));
+                System.out.println("End");
+            }
+            else if(userInput.equals("BFS")){
+                System.out.println("Start");
+                Map<String, String> x = searchAlgo.bfs(hardestSoFar, true);
+                System.out.println("BFS : " + "path length "+x.get("PATHLEN") + " Moves " + x.get("MOVES") + " Max Fringe " + x.get("MAXFRINGE"));
+                System.out.println("End");
 
-        System.out.println("BFS : " + x.get("PATHLEN") + " " + x.get("MOVES") + " " + x.get("MAXFRINGE"));
-            System.out.println("DFS : " + dfs.get("PATHLEN") + " " + dfs.get("MOVES") + " " + dfs.get("MAXFRINGE"));
-            System.out.println("EUCIDEAN : " + eu.get("PATHLEN") + " " + eu.get("MOVES") + " " + eu.get("MAXFRINGE"));
-            System.out.println("MANHATTAN : " + ma.get("PATHLEN") + " " + ma.get("MOVES") + " " + ma.get("MAXFRINGE"));
+            }
+            else if(userInput.equals("Euclidean")){
+                System.out.println("Start");
+                Map<String, String> x = searchAlgo.EuclidianAstar(hardestSoFar, true);
+                System.out.println("Euclidean : " + x.get("PATHLEN") + " " + x.get("MOVES") + " " + x.get("MAXFRINGE"));
+                System.out.println("End");
+            }
+            else {//manhattan
+                System.out.println("Start");
+                Map<String, String> x = searchAlgo.dfs(hardestSoFar, true);
+                System.out.println("Manhattan : " + x.get("PATHLEN") + " " + x.get("MOVES") + " " + x.get("MAXFRINGE"));
+                System.out.println("End");
+            }
+            //Map<String,String> dfs = searchAlgo.dfs(hardestSoFar);
+           // Map<String,String> eu = searchAlgo.EuclidianAstar(hardestSoFar);
+         //   Map<String,String> ma = searchAlgo.ManhattanAstar(hardestSoFar);
+
+
+           // System.out.println("DFS : " + dfs.get("PATHLEN") + " " + dfs.get("MOVES") + " " + dfs.get("MAXFRINGE"));
+           // System.out.println("EUCIDEAN : " + eu.get("PATHLEN") + " " + eu.get("MOVES") + " " + eu.get("MAXFRINGE"));
+          //  System.out.println("MANHATTAN : " + ma.get("PATHLEN") + " " + ma.get("MOVES") + " " + ma.get("MAXFRINGE"));
+
+
             return hardestSoFar;
         }
         else {
@@ -529,23 +555,23 @@ return null;
         return afterCrossOver;
     }
 
-    public Cell[][] mutation(Cell[][] afterCrossOver) {
-        Random random = new Random();
-        for (int i = 0; i <= dimensions / 2; i++) {
-            int x = random.nextInt(dimensions - 1);
-            int y = random.nextInt(dimensions - 1);
-
-            if (afterCrossOver[x][y].getOccupied() == 0) {
-                afterCrossOver[x][y].setOccupied(-1);
-            } else {
-                afterCrossOver[x][y].setOccupied(0);
-            }
-        }
-        afterCrossOver[0][0].setOccupied(0);
-        afterCrossOver[dimensions - 1][dimensions - 1].setOccupied(0);
-       // System.out.println("MUTATION" + isSolvable(afterCrossOver));
-        return afterCrossOver;
-    }
+//    public Cell[][] mutation(Cell[][] afterCrossOver) {
+//        Random random = new Random();
+//        for (int i = 0; i <= dimensions / 2; i++) {
+//            int x = random.nextInt(dimensions - 1);
+//            int y = random.nextInt(dimensions - 1);
+//
+//            if (afterCrossOver[x][y].getOccupied() == 0) {
+//                afterCrossOver[x][y].setOccupied(-1);
+//            } else {
+//                afterCrossOver[x][y].setOccupied(0);
+//            }
+//        }
+//        afterCrossOver[0][0].setOccupied(0);
+//        afterCrossOver[dimensions - 1][dimensions - 1].setOccupied(0);
+//       // System.out.println("MUTATION" + isSolvable(afterCrossOver));
+//        return afterCrossOver;
+//    }
 
 
 }

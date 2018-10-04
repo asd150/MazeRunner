@@ -1,6 +1,5 @@
 package GeneticAlgorithm;
 
-import java.util.Map;
 
 public class MazeMain {
     public static void main(String[] args){
@@ -9,7 +8,7 @@ public class MazeMain {
      //result = GAClass.start("DFS");
      SearchAlgo searchAlgo = new SearchAlgo(50);
 
-   result=  GAClass.start("Euclidean");
+   result=  GAClass.start("DFS");
 
    //boolean x = GAClass.isSolvable(result);
     //System.out.println( "in main"+ x );
